@@ -49,13 +49,17 @@ public class DonorService {
 
     public Map<String, Double> calculateAverageBMIByAgeRange() {
         return donorRepository.findAll().stream()
+                .filter(donor -> donor.getWeight() != null && donor.getHeight() != null && donor.getHeight() > 0)
                 .collect(Collectors.groupingBy(
                         donor -> {
                             int age = donor.getAge();
                             return (age / 10) * 10 + "-" + ((age / 10) * 10 + 9);
                         },
                         Collectors.averagingDouble(donor -> donor.getWeight() / Math.pow(donor.getHeight(), 2))
-                ));
+                ))
+                .entrySet().stream()
+                .filter(entry -> !entry.getValue().isNaN()) // Remove groups with no valid donors
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public Map<String, Double> calculateObesityPercentageByGender() {
@@ -76,7 +80,14 @@ public class DonorService {
 
     public Map<String, Double> calculateAverageAgeByBloodType() {
         return donorRepository.findAll().stream()
-                .collect(Collectors.groupingBy(Donor::getBloodType, Collectors.averagingInt(Donor::getAge)));
+                .filter(donor -> donor.getAge() != null && donor.getBloodType() != null)
+                .collect(Collectors.groupingBy(
+                        Donor::getBloodType,
+                        Collectors.averagingInt(Donor::getAge)
+                ))
+                .entrySet().stream()
+                .filter(entry -> !entry.getValue().isNaN()) // Remove groups with no valid donors
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public Map<String, Long> calculatePotentialDonorsByRecipientType() {
@@ -100,5 +111,9 @@ public class DonorService {
                                 .filter(donor -> entry.getValue().contains(donor.getBloodType()))
                                 .count()
                 ));
+    }
+
+    public void deleteAllDonors() {
+        donorRepository.deleteAll();
     }
 }

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DonorDTO {
-    
+
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
@@ -50,4 +50,8 @@ public class DonorDTO {
     private String celular;
 
     private String tipoSanguineo;
+
+    public Double getHeight() {
+        return this.altura;
+    }
 }

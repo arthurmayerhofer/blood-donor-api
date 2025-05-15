@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,7 @@ public class DonorController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/donors/batch")
+    @PostMapping("/batch")
     public ResponseEntity<Void> addDonorsBatch(@Valid @RequestBody List<DonorDTO> donorDTOs) {
         donorService.saveAllDonors(donorDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -77,5 +78,11 @@ public class DonorController {
     @GetMapping("/potential-donors-by-recipient")
     public ResponseEntity<Map<String, Long>> calculatePotentialDonorsByRecipientType() {
         return ResponseEntity.ok(donorService.calculatePotentialDonorsByRecipientType());
+    }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<Void> deleteAllDonors() {
+        donorService.deleteAllDonors();
+        return ResponseEntity.noContent().build();
     }
 }

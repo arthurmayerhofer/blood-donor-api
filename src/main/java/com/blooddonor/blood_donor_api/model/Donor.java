@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Donor {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,31 +35,31 @@ public class Donor {
     private String cpf;
 
     private String rg;
-    
+
     @Column(name = "data_nasc")
     private LocalDate dataNascimento;
-    
+
     private String sexo;
     private String mae;
     private String pai;
-    
+
     @Column(unique = true)
     private String email;
-    
+
     private String cep;
     private String endereco;
     private Integer numero;
     private String bairro;
     private String cidade;
     private String estado;
-    
+
     @Column(name = "telefone_fixo")
     private String telefoneFixo;
-    
+
     private String celular;
     private Double altura;
     private Double peso;
-    
+
     @Column(name = "tipo_sanguineo")
     private String tipoSanguineo;
 
