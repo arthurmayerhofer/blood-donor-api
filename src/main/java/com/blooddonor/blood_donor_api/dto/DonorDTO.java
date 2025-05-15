@@ -1,6 +1,7 @@
 package com.blooddonor.blood_donor_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -49,6 +50,7 @@ public class DonorDTO {
     private String telefoneFixo;
     private String celular;
 
+    @JsonProperty("tipo_sanguineo")
     private String tipoSanguineo;
 
     public Double getHeight() {

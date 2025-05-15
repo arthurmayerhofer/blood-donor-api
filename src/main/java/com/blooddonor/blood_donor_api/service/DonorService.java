@@ -14,10 +14,12 @@ import com.blooddonor.blood_donor_api.repository.DonorRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class DonorService {
 
     private final DonorRepository donorRepository;
@@ -25,7 +27,15 @@ public class DonorService {
 
     public void saveAllDonors(@Valid List<DonorDTO> donorDTOs) {
         List<Donor> donors = donorDTOs.stream()
-                .map(dto -> modelMapper.map(dto, Donor.class))
+                .map(dto -> {
+                    log.info("Mapping DonorDTO: {}", dto);
+                    Donor donor = modelMapper.map(dto, Donor.class);
+                    log.info("Mapped Donor: {}", donor);
+                    if (donor.getDataNascimento() == null || donor.getTipoSanguineo() == null) {
+                        throw new IllegalArgumentException("Campos obrigatórios ausentes: data_nasc ou tipo_sanguineo");
+                    }
+                    return donor;
+                })
                 .collect(Collectors.toList());
 
         donorRepository.saveAll(donors);
@@ -74,7 +84,9 @@ public class DonorService {
         return obeseByGender.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> (entry.getValue() * 100.0) / totalByGender.get(entry.getKey())
+                        entry -> totalByGender.get(entry.getKey()) != 0
+                        ? (entry.getValue() * 100.0) / totalByGender.get(entry.getKey())
+                        : 0.0
                 ));
     }
 
@@ -92,6 +104,7 @@ public class DonorService {
 
     public Map<String, Long> calculatePotentialDonorsByRecipientType() {
         List<Donor> donors = donorRepository.findAll();
+
         Map<String, List<String>> bloodTypeCompatibility = Map.of(
                 "A+", List.of("A+", "AB+"),
                 "A-", List.of("A+", "A-", "AB+", "AB-"),

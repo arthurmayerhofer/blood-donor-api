@@ -43,7 +43,7 @@ public class DonorController {
         return ResponseEntity.ok(donorService.getAllDonors());
     }
 
-    @PostMapping("/donors")
+    @PostMapping("/add")
     public ResponseEntity<Void> addDonor(@Valid @RequestBody DonorDTO donorDTO) {
         donorService.addDonor(donorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
