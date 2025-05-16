@@ -80,6 +80,11 @@ public class DonorController {
         return ResponseEntity.ok(donorService.calculatePotentialDonorsByRecipientType());
     }
 
+    @GetMapping("/by-state")
+    public ResponseEntity<Map<String, List<DonorDTO>>> getDonorsByState() {
+        return ResponseEntity.ok(donorService.getDonorsByState());
+    }
+
     @DeleteMapping("/delete-all")
     public ResponseEntity<Void> deleteAllDonors() {
         donorService.deleteAllDonors();

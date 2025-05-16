@@ -129,4 +129,12 @@ public class DonorService {
     public void deleteAllDonors() {
         donorRepository.deleteAll();
     }
+
+    public Map<String, List<DonorDTO>> getDonorsByState() {
+        return donorRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        Donor::getState,
+                        Collectors.mapping(donor -> modelMapper.map(donor, DonorDTO.class), Collectors.toList())
+                ));
+    }
 }
